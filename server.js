@@ -26,6 +26,7 @@ app.use(express.static(__dirname));
 
 var inTheMiddleOfTest;
 var arrQuestionCreate;
+
 app.get('/create',function(req,res){
   // app.use(express.static(__dirname));
   counterQ = 1;
@@ -35,9 +36,6 @@ app.get('/create',function(req,res){
   res.render('setNumberOfQuestions');
 });
 
-app.get('/max', function(req, res){
-  res.send("max counterQ: "+ maxCounter);
-});
 
 app.get('/controller_answer', function(req, res){
   res.sendFile(__dirname+'/controller_answer.js');
