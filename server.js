@@ -3,14 +3,16 @@ var bodyParser     =        require("body-parser");
 var fs = require("fs");
 //var less = require('less');
 var app            =        express();
+var session = require("express-sessions")
 var formSub = require("./formSubmition.js");
-var showSql = require("./select.js");
+var showSql = session("./select.js");
 
-var counterQ = 1;
+
+req.session.counterQ = 1;
 //i created the quiz counter for being ablet to save quizes and being able to answer them
 var quizCounter = 0;
-var maxCounter;
-var arrQuestionCreate = [];
+req.session.maxCounter;
+req.session.arrQuestionCreate = [];
 maxCounter = fs.readFileSync('maxCounter.txt', 'utf8', function(err, date){
   if(err){
     console.log("is the error here in maxcounter.txt");
@@ -23,15 +25,17 @@ console.log("after reading some boring books the counterQ is:"+ maxCounter);
 
 app.set('view engine', 'ejs');
 app.use(express.static(__dirname));
+app.use(session({secret: 'ssshhhhh'}));
 
 var inTheMiddleOfTest;
 var arrQuestionCreate;
 
 app.get('/create',function(req,res){
+  
   // app.use(express.static(__dirname));
-  counterQ = 1;
-  maxCounter = 1;
-  arrQuestionCreate = [];
+  req.session.counterQ = 1;
+  req.session.maxCounter = 1;
+  req.session.arrQuestionCreate = [];
   inTheMiddleOfTest = true;
   res.render('setNumberOfQuestions');
 });
@@ -95,11 +99,11 @@ function isCorrectAnswer(selectedAnswer, numQuestion){
 var urlencodedParser = bodyParser.urlencoded({ extended: false });
 
 app.post("/numberOfQuestion", urlencodedParser, function(req,res){
-  maxCounter = req.body.numQuestions;
+  req.session.maxCounter = req.body.numQuestions;
+  console.log("maxCounter from session"+req.session.maxCounter);
 
 
 
-  console.log("maxCounter: " + maxCounter);
   res.render('indexCreate', {count: counterQ});
   console.log("count initiaing.... "+counterQ);
 
@@ -111,19 +115,20 @@ app.post("/submitQuestion", urlencodedParser,function (req, res) {
 
   console.log("count~~!: "+counterQ);
   console.log("Maxcount~~!: "+maxCounter);
-  if(counterQ < maxCounter){
-      arrQuestionCreate.push(req.body);
-      counterQ++;
-      res.render('indexCreate', {count: counterQ});
+  if(req.session.counterQ < req.session.maxCounter){
+      req.session.arrQuestionCreate.push(req.body);
+      req.session.counterQ++;
+      res.render('indexCreate', {count: req.session.counterQ});
 
-  }else if(counterQ == maxCounter){
+  }else if(req.session.counterQ == req.session.maxCounter){
     console.log("equility is importent");
 
-    arrQuestionCreate.push(req.body);
+    req.session.arrQuestionCreate.push(req.body);
+    ////////////////!!!Dont save var on file, save it seession, all the vars!!!!!!!!!!!!!!!!!!!
     howManyQuestionPassedUntilTheBeginingOfQuiz  = fs.readFileSync("questionsCounterSoFar.txt");
     console.log('maxCounter.txt file has been saved!');
-      formSub.formSubmitQuestionPosInfoSql(parseInt(howManyQuestionPassedUntilTheBeginingOfQuiz), parseInt(maxCounter))
-      var questionsNumAfterQuiz = (parseInt(howManyQuestionPassedUntilTheBeginingOfQuiz)+parseInt(maxCounter));
+      formSub.formSubmitQuestionPosInfoSql(parseInt(howManyQuestionPassedUntilTheBeginingOfQuiz), parseInt(req.session.maxCounter))
+      var questionsNumAfterQuiz = (parseInt(howManyQuestionPassedUntilTheBeginingOfQuiz)+parseInt(req.session.maxCounter));
       console.log("howManyQuestionPassedUntilTheBeginingOfQuiz::::::::::::::::::::::::::::: "+ howManyQuestionPassedUntilTheBeginingOfQuiz);
       console.log("questionsNumAfterQuiz::::::::::::::::::::::::::::: "+ questionsNumAfterQuiz);
       fs.writeFile("questionsCounterSoFar.txt", questionsNumAfterQuiz, (err) => {
@@ -132,9 +137,9 @@ app.post("/submitQuestion", urlencodedParser,function (req, res) {
   });
 
     console.log("now pushing all data");
-    for (var i = 0; i < arrQuestionCreate.length; i++) {
-      console.log("now pushing data number "+JSON.stringify(arrQuestionCreate[i]));
-      formSub.formSubmitQuestionSql(arrQuestionCreate[i]);
+    for (var i = 0; i < req.session.arrQuestionCreate.length; i++) {
+      console.log("now pushing data number "+JSON.stringify(req.session.arrQuestionCreate[i]));
+      formSub.formSubmitQuestionSql(req.session.arrQuestionCreate[i]);
     }
       res.render('doneFormCreation');
   }else{
