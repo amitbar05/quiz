@@ -54,6 +54,14 @@ app.get('/',function(req,res){
 
 app.get('/quiz:number',function(req,res){
   // app.use(express.static(__dirname));rs
+  console.log("before sql stak");
+  console.log("asking quiz number "+req.params.number);
+showSql.getLastFormCreatedNumber(function callback(maxQuizes){
+  console.log("maxQuizes"+ maxQuizes);
+
+  if(maxQuizes < req.params.number){
+    res.render("numberOfQuizTooHigh")
+  }else{
   showSql.getFormByNumForms(req.params.number, function callback(wantedQuiz){
     console.log(wantedQuiz);
     var question_passed = wantedQuiz[0].question_passed;
@@ -62,6 +70,8 @@ app.get('/quiz:number',function(req,res){
           res.render('answer', {dataSql: dataSql, max: size});
       });
   });
+}
+});
 });
 
 

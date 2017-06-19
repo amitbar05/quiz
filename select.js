@@ -9,13 +9,13 @@ var connection = mysql.createConnection({
 
 connection.connect();
 
-exports.showLastN = function(maxCounter, callback){
-  connection.query('SELECT * FROM quiz ORDER BY number_question DESC LIMIT '+maxCounter, function(err, result){
+exports.getLastFormCreatedNumber = function( callback){
+  connection.query('SELECT * FROM listPosDis ORDER BY Number_form DESC LIMIT 1', function(err, result){
     if(err){
       console.error(err);
     }else {
-      console.log(result);
-      callback(result);
+      console.log(result[0].Number_form);
+      callback(parseInt(result[0].Number_form));
     }
   });
 };
