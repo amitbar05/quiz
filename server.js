@@ -3,39 +3,33 @@ var bodyParser     =        require("body-parser");
 var fs = require("fs");
 //var less = require('less');
 var app            =        express();
-var session = require("express-sessions")
+var session = require("express-session")
 var formSub = require("./formSubmition.js");
 var showSql = session("./select.js");
 
 
-req.session.counterQ = 1;
+//req.session.counterQ = 1;
 //i created the quiz counter for being ablet to save quizes and being able to answer them
 var quizCounter = 0;
-req.session.maxCounter;
-req.session.arrQuestionCreate = [];
-maxCounter = fs.readFileSync('maxCounter.txt', 'utf8', function(err, date){
-  if(err){
-    console.log("is the error here in maxcounter.txt");
-    maxCounter=2;
-  }
-});
-console.log("after reading some boring books the counterQ is:"+ maxCounter);
+//req.session.maxCounter;
+//req.session.arrQuestionCreate = [];
 
 
 
 app.set('view engine', 'ejs');
 app.use(express.static(__dirname));
 app.use(session({secret: 'ssshhhhh'}));
+var sess;
 
 var inTheMiddleOfTest;
 var arrQuestionCreate;
 
 app.get('/create',function(req,res){
-  
+sess = req.session;
   // app.use(express.static(__dirname));
-  req.session.counterQ = 1;
-  req.session.maxCounter = 1;
-  req.session.arrQuestionCreate = [];
+  sess.counterQ = 1;
+  sess.maxCounter = 1;
+  sess.arrQuestionCreate = [];
   inTheMiddleOfTest = true;
   res.render('setNumberOfQuestions');
 });
@@ -99,31 +93,34 @@ function isCorrectAnswer(selectedAnswer, numQuestion){
 var urlencodedParser = bodyParser.urlencoded({ extended: false });
 
 app.post("/numberOfQuestion", urlencodedParser, function(req,res){
-  req.session.maxCounter = req.body.numQuestions;
-  console.log("maxCounter from session"+req.session.maxCounter);
+  sess = req.session;
+  sess.maxCounter = req.body.numQuestions;
+  console.log("maxCounter from session"+sess.maxCounter);
+console.log("sessionID "+req.sessionID);
+console.log("sessionID "+req.sessionID);
+console.log("sessionID "+req.sessionID);
+console.log("sessionID "+req.sessionID);
 
 
-
-  res.render('indexCreate', {count: counterQ});
-  console.log("count initiaing.... "+counterQ);
+  res.render('indexCreate', {count: sess.counterQ});
+  console.log("count initiaing.... "+sess.counterQ);
 
 });
 
 
 app.post("/submitQuestion", urlencodedParser,function (req, res) {
+sess = req.session;
+  console.log("count~~!: "+sess.counterQ);
+  console.log("Maxcount~~!: "+sess.maxCounter);
+  if(sess.counterQ < sess.maxCounter){
+      sess.arrQuestionCreate.push(req.body);
+      sess.counterQ++;
+      res.render('indexCreate', {count: sess.counterQ});
 
-
-  console.log("count~~!: "+counterQ);
-  console.log("Maxcount~~!: "+maxCounter);
-  if(req.session.counterQ < req.session.maxCounter){
-      req.session.arrQuestionCreate.push(req.body);
-      req.session.counterQ++;
-      res.render('indexCreate', {count: req.session.counterQ});
-
-  }else if(req.session.counterQ == req.session.maxCounter){
+  }else if(sess.counterQ == sess.maxCounter){
     console.log("equility is importent");
 
-    req.session.arrQuestionCreate.push(req.body);
+    sess.arrQuestionCreate.push(req.body);
     ////////////////!!!Dont save var on file, save it seession, all the vars!!!!!!!!!!!!!!!!!!!
     howManyQuestionPassedUntilTheBeginingOfQuiz  = fs.readFileSync("questionsCounterSoFar.txt");
     console.log('maxCounter.txt file has been saved!');
