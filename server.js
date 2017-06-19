@@ -5,7 +5,7 @@ var fs = require("fs");
 var app            =        express();
 var session = require("express-session")
 var formSub = require("./formSubmition.js");
-var showSql = session("./select.js");
+var showSql = require("./select.js");
 
 
 //req.session.counterQ = 1;
@@ -18,7 +18,7 @@ var quizCounter = 0;
 
 app.set('view engine', 'ejs');
 app.use(express.static(__dirname));
-app.use(session({secret: 'ssshhhhh'}));
+app.use(session({secret: 'ssshhhhh', resave:false, saveUninitialized:true}));
 var sess;
 
 var inTheMiddleOfTest;
@@ -53,12 +53,9 @@ app.get('/',function(req,res){
 });
 
 app.get('/quiz:number',function(req,res){
-  // app.use(express.static(__dirname));
+  // app.use(express.static(__dirname));rs
   showSql.getFormByNumForms(req.params.number, function callback(wantedQuiz){
     console.log(wantedQuiz);
-    console.log("the wininingignignigngingin number issssssisisissi -----"+req.params.number);
-    console.log("the wininingignignigngingin questioPASSSED issssssisisissi -----"+wantedQuiz[0].question_passed);
-    console.log("the wininingignignigngingin sizeszoiziszsizszisziSIZE issssssisisissi -----"+wantedQuiz[0].size);
     var question_passed = wantedQuiz[0].question_passed;
     var size = wantedQuiz[0].size;
       showSql.showSpecificFormByDistanceAndSize(question_passed,size,function callback(dataSql){

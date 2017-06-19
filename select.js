@@ -49,10 +49,16 @@ exports.getFormByNumForms = function(numForm, callback){
 
 
 exports.showSpecificFormByDistanceAndSize = function(howManyQuestionPassedUntilTheBeginingOfQuiz, sizeOfQuiz, callback){
-  var sumOfQuestionPassed = howManyQuestionPassedUntilTheBeginingOfQuiz + sizeOfQuiz;
+  console.log("howManyQuestionPassedUntilTheBeginingOfQuiz:         "+howManyQuestionPassedUntilTheBeginingOfQuiz);
+  console.log("sizeOfQuiz;                                        "+sizeOfQuiz);
+
+  var sumOfQuestionPassed = parseInt(howManyQuestionPassedUntilTheBeginingOfQuiz) + parseInt(sizeOfQuiz);
+  console.log("sumOfQuestionPassed:                                     "+ sumOfQuestionPassed);
   var string ='SELECT * FROM (SELECT * FROM ( SELECT * FROM quiz ORDER BY number_question ASC LIMIT '
   +sumOfQuestionPassed+') temp ORDER BY temp.number_question DESC LIMIT '
   +sizeOfQuiz+') t ORDER BY rand() ASC';
+
+  //var string =SELECT * FROM (SELECT * FROM ( SELECT * FROM quiz ORDER BY number_question ASC LIMIT 'QuestionPassed') temp ORDER BY temp.number_question DESC LIMIT 'sizeOfQuiz+') t ORDER BY rand() ASC;
   //var stringNotRandom is unnesccery
   var stringNotRandom ='SELECT * FROM ( SELECT * FROM quiz ORDER BY number_question ASC LIMIT '
   +sumOfQuestionPassed+') temp ORDER BY temp.number_question DESC LIMIT '
