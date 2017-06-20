@@ -97,7 +97,8 @@ function isCorrectAnswer(selectedAnswer, numQuestion){
 ///app.post('/', function())
 
 //Here we are configuring express to use body-parser as middle-ware.
-var urlencodedParser = bodyParser.urlencoded({ extended: false });
+var urlencodedParser = bodyParser.urlencoded({ extended: true });
+app.use(bodyParser.json());
 
 app.post("/numberOfQuestion", urlencodedParser, function(req,res){
   sess = req.session;
@@ -152,11 +153,20 @@ sess = req.session;
 });
 
 
-app.post("/submitAnswer:number_question", urlencodedParser, function(req, res){
-  console.log(req.params.number_question);
-  console.log(JSON.stringify(req.params.number_question));
-  console.log("not! "+req.body.options);
-  console.log("this is question is: "+isCorrectAnswer(req.body.options,req.params.number_question));
+app.post("/submitAnswer", urlencodedParser, function(req, res){
+  var questions = req.body
+  console.log("request body: " + JSON.stringify(questions) );
+
+    for (var question in questions){
+    console.log("questionID = " + question);
+
+    console.log("User Answer = " + questions[question] % 4)
+
+    console.log("The q and a is: "+isCorrectAnswer(questions[question] % 4,question));
+}
+//  console.log(req.params.number_question);
+  //console.log(JSON.stringify(req.params.number_question));
+  //console.log("not! "+req.body.options);
 });
 
 

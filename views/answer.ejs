@@ -8,45 +8,58 @@
 </head>
 
 <body>
+  <form action="/submitAnswer" name="optionSelected" method="post">
   <%for (var i = 0; i < max; i++) {%>
     <%var idAuto = [(1+i*4),(2+i*4),(3+i*4),(4+i*4)]; %>
     <div class="mdl-cell mdl-card mdl-shadow--2dp">
-      <div class="mdl-card__title">
-        <h5> <%=dataSql[i].question %> </h5>
-      </div>
-      <div class="mdl-card__actions">
-        <form action="/submitAnswer<%-dataSql[i].number_question%>" name="optionSelected" method="post">
 
-          <label class="mdl-radio mdl-js-radio mdl-js-ripple-effect" for="option-<%-idAuto[0]%>">
-            <input type="radio" id="option-<%-idAuto[0]%>" class="mdl-radio__button" name="options" value="<%-idAuto[0]%>" checked>
-            <span class="mdl-radio__label"><%=dataSql[i].answer1 %></span>
-          </label>
+      <div class="mdl-card__actions">
+
+          <div class="mdl-card__title">
+            <h5> <%=dataSql[i].question %> </h5>
+          </div>
+
+          <fieldset id="group-<%-i%>">
+            console.log("var number of quesrion"+<%-dataSql[i].number_question%>)
+
+            <label class="mdl-radio mdl-js-radio mdl-js-ripple-effect" for="option-<%-idAuto[0]%>">
+              <input type="radio" id="option-<%-idAuto[0]%>" class="mdl-radio__button" name="<%-dataSql[i].number_question%>" value="<%-idAuto[0]%>" checked>
+              <span class="mdl-radio__label"><%=dataSql[i].answer1 %></span>
+            </label>
+            <br>
+            <label class="mdl-radio mdl-js-radio mdl-js-ripple-effect" for="option-<%-idAuto[1]%>">
+              <input type="radio" id="option-<%-idAuto[1]%>" class="mdl-radio__button" name="<%-dataSql[i].number_question%>" value="<%-idAuto[1]%>" checked>
+              <span class="mdl-radio__label"><%=dataSql[i].answer2 %></span>
+            </label>
+            <br>
+            <label class="mdl-radio mdl-js-radio mdl-js-ripple-effect" for="option-<%-idAuto[2]%>">
+              <input type="radio" id="option-<%-idAuto[2]%>" class="mdl-radio__button" name="<%-dataSql[i].number_question%>" value="<%-idAuto[2]%>" checked>
+              <span class="mdl-radio__label"><%=dataSql[i].answer3 %></span>
+            </label>
+            <br>
+            <label class="mdl-radio mdl-js-radio mdl-js-ripple-effect" for="option-<%-idAuto[3]%>">
+              <input type="radio" id="option-<%-idAuto[3]%>" class="mdl-radio__button" name="<%-dataSql[i].number_question%>" value="<%-idAuto[3]%>" checked>
+              <span class="mdl-radio__label"><%=dataSql[i].answer4 %></span>
+            </label>
+            <br>
+              </fieldset>
+              <%}%>
+
+              <button class="mdl-button mdl-js-button mdl-button--raised mdl-js-ripple-effect mdl-button--colored">
+                Done
+              </button>
+
+
+
+
+
           <br>
-          <label class="mdl-radio mdl-js-radio mdl-js-ripple-effect" for="option-<%-idAuto[1]%>">
-            <input type="radio" id="option-<%-idAuto[1]%>" class="mdl-radio__button" name="options" value="<%-idAuto[1]%>" checked>
-            <span class="mdl-radio__label"><%=dataSql[i].answer2 %></span>
-          </label>
-          <br>
-          <label class="mdl-radio mdl-js-radio mdl-js-ripple-effect" for="option-<%-idAuto[2]%>">
-            <input type="radio" id="option-<%-idAuto[2]%>" class="mdl-radio__button" name="options" value="<%-idAuto[2]%>" checked>
-            <span class="mdl-radio__label"><%=dataSql[i].answer3 %></span>
-          </label>
-          <br>
-          <label class="mdl-radio mdl-js-radio mdl-js-ripple-effect" for="option-<%-idAuto[3]%>">
-            <input type="radio" id="option-<%-idAuto[3]%>" class="mdl-radio__button" name="options" value="<%-idAuto[3]%>" checked>
-            <span class="mdl-radio__label"><%=dataSql[i].answer4 %></span>
-          </label>
-          <br>
-          <br>
-          <button class="mdl-button mdl-js-button mdl-button--raised mdl-js-ripple-effect mdl-button--colored">
-            Done
-          </button>
+
         </form>
       </div>
     </div>
 
     <br>
-    <%}%>
 
 
   </body>
