@@ -20,7 +20,6 @@
           </div>
 
           <fieldset id="group-<%-i%>">
-            console.log("var number of quesrion"+<%-dataSql[i].number_question%>)
 
             <label class="mdl-radio mdl-js-radio mdl-js-ripple-effect" for="option-<%-idAuto[0]%>">
               <input type="radio" id="option-<%-idAuto[0]%>" class="mdl-radio__button" name="<%-dataSql[i].number_question%>" value="<%-idAuto[0]%>" checked>
@@ -43,6 +42,8 @@
             </label>
             <br>
               </fieldset>
+            </div>
+          </div>
               <%}%>
 
               <button class="mdl-button mdl-js-button mdl-button--raised mdl-js-ripple-effect mdl-button--colored">
@@ -56,8 +57,6 @@
           <br>
 
         </form>
-      </div>
-    </div>
 
     <br>
 
