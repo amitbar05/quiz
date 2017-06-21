@@ -6,13 +6,9 @@ var app            =        express();
 var session = require("express-session")
 var formSub = require("./formSubmition.js");
 var showSql = require("./select.js");
+var insert = require("./insert.js");
 
 
-//req.session.counterQ = 1;
-//i created the quiz counter for being ablet to save quizes and being able to answer them
-var quizCounter = 0;
-//req.session.maxCounter;
-//req.session.arrQuestionCreate = [];
 
 
 
@@ -21,12 +17,9 @@ app.use(express.static(__dirname));
 app.use(session({secret: 'ssshhhhh', resave:false, saveUninitialized:true}));
 var sess;
 
-var inTheMiddleOfTest;
-var arrQuestionCreate;
 
 app.get('/create',function(req,res){
 sess = req.session;
-  // app.use(express.static(__dirname));
   sess.counterQ = 1;
   sess.maxCounter = 1;
   sess.arrQuestionCreate = [];
@@ -35,9 +28,6 @@ sess = req.session;
 });
 
 
-app.get('/controller_answer', function(req, res){
-  res.sendFile(__dirname+'/controller_answer.js');
-});
 
 app.get('/test', function(req, res){
 
@@ -54,7 +44,6 @@ app.get('/',function(req,res){
 
 app.get('/quiz:number',function(req,res){
   // app.use(express.static(__dirname));rs
-  console.log("before sql stak");
   console.log("asking quiz number "+req.params.number);
 showSql.getLastFormCreatedNumber(function callback(maxQuizes){
   console.log("maxQuizes"+ maxQuizes);
@@ -131,8 +120,8 @@ sess = req.session;
     sess.arrQuestionCreate.push(req.body);
     ////////////////!!!Dont save var on file, save it seession, all the vars!!!!!!!!!!!!!!!!!!!
     howManyQuestionPassedUntilTheBeginingOfQuiz  = fs.readFileSync("questionsCounterSoFar.txt");
-    console.log('maxCounter.txt file has been saved!');
-      formSub.formSubmitQuestionPosInfoSql(parseInt(howManyQuestionPassedUntilTheBeginingOfQuiz), parseInt(req.session.maxCounter))
+    //need to do the sql sync with callback
+
       var questionsNumAfterQuiz = (parseInt(howManyQuestionPassedUntilTheBeginingOfQuiz)+parseInt(req.session.maxCounter));
       console.log("howManyQuestionPassedUntilTheBeginingOfQuiz::::::::::::::::::::::::::::: "+ howManyQuestionPassedUntilTheBeginingOfQuiz);
       console.log("questionsNumAfterQuiz::::::::::::::::::::::::::::: "+ questionsNumAfterQuiz);
@@ -141,12 +130,19 @@ sess = req.session;
         console.log('questionsCounterSoFar.txt file has been saved!');
   });
 
-    console.log("now pushing all data");
-    for (var i = 0; i < req.session.arrQuestionCreate.length; i++) {
-      console.log("now pushing data number "+JSON.stringify(req.session.arrQuestionCreate[i]));
-      formSub.formSubmitQuestionSql(req.session.arrQuestionCreate[i]);
-    }
-      res.render('doneFormCreation');
+    var quizIdCurrent;
+    insert.insertQuestionPosInfoSql(parseInt(howManyQuestionPassedUntilTheBeginingOfQuiz), parseInt(req.session.maxCounter), function callback(quizId){
+      quizIdCurrent = quizId;
+      console.log("here is get the quiz number, which is = " + quizIdCurrent);
+
+          res.render('doneFormCreation');
+    });
+  console.log("now pushing all data");
+  for (var i = 0; i < req.session.arrQuestionCreate.length; i++) {
+    console.log("now pushing data number "+JSON.stringify(req.session.arrQuestionCreate[i]));
+    formSub.formSubmitQuestionSql(req.session.arrQuestionCreate[i]);
+  }
+
   }else{
   console.error("number of questions is less than acceptable");
   }
@@ -160,13 +156,11 @@ app.post("/submitAnswer", urlencodedParser, function(req, res){
     for (var question in questions){
     console.log("questionID = " + question);
 
-    console.log("User Answer = " + questions[question] % 4)
+    console.log("User Answer = " + questions[question])
 
-    console.log("The q and a is: "+isCorrectAnswer(questions[question] % 4,question));
+    console.log("The q and a is: "+isCorrectAnswer(questions[question],question));
 }
-//  console.log(req.params.number_question);
-  //console.log(JSON.stringify(req.params.number_question));
-  //console.log("not! "+req.body.options);
+
 });
 
 

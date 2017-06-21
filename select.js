@@ -39,7 +39,7 @@ exports.getFormByNumForms = function(numForm, callback){
   var string = 'SELECT * FROM listPosDis WHERE Number_form = '+numForm+';';
   connection.query(string, function(err, result){
     if(err){
-      console.error("error number idiot 2313213"+err);
+      console.error("error number idiot 1"+err);
     }else {
       console.log("i am not an error: "+result);
       callback(result);
