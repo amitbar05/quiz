@@ -1,0 +1,40 @@
+<!DOCTYPE html>
+
+<html>
+<head>
+    <link href="/assets/styles.css" rel="stylesheet" type="text/css">
+    <script src="scripts/jquery-3.2.1.js"></script>
+
+</head>
+<body>
+
+you were right <%=percent%> out of the time
+
+<div class="pie"><%=percent%></div>
+
+<script>
+jQuery('.pie').each(function(index, element) {
+  var num = +($(this).text());
+  var chart = '<svg viewBox="0 0 32 32"><circle class="circle" r="16" cx="16" cy="16" style="stroke-dasharray: 10 100" /></svg>';
+  jQuery(this).html(chart);
+  if(<%=percent%> > 50){
+  jQuery(this).find('.circle').css('stroke', 'limegreen');
+}else {
+  jQuery(this).find('.circle').css('stroke', 'red');
+}
+  if(num == 100){
+  jQuery(this).find('.circle').css('stroke-dasharray', (num+1) + ' 100');
+}else {
+    jQuery(this).find('.circle').css('stroke-dasharray', (num) + ' 100');
+  }
+  jQuery(this).append('<h2>' + num + '%</h2>');
+});
+
+</script
+<%if(percent < 50){%>
+  <h1> you have Failed, please do the test one more time</h1>
+  <a href="<%=url%>">redo the test</a>
+<%}%>
+
+</body>
+</html>

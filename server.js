@@ -33,7 +33,9 @@ app.get('/test', function(req, res){
 
   //res.sendFile(__dirname+'/test.html');
   console.log("this is before doning");
-  res.render('doneFormCreation')
+  var roundedPercent = 0
+  var urlQuiz = "/quiz1"
+  res.render('doneAnsweringQuiz', {percent: roundedPercent, url: urlQuiz});
   console.log("this is afrer doning");
 });
 
@@ -114,12 +116,10 @@ app.post("/submitQuestion", urlencodedParser,function (req, res) {
       console.log('questionsCounterSoFar.txt file has been saved!');
     });
 
-    var quizIdCurrent;
-    insert.insertQuestionPosInfoSql(parseInt(howManyQuestionPassedUntilTheBeginingOfQuiz), parseInt(req.session.maxCounter), function callback(quizId){
-      quizIdCurrent = quizId;
-      console.log("here is get the quiz number, which is = " + quizIdCurrent);
 
-      res.render('doneFormCreation');
+    insert.insertQuestionPosInfoSql(parseInt(howManyQuestionPassedUntilTheBeginingOfQuiz), parseInt(req.session.maxCounter), function callback(quizId){
+      var urlStringQuiz = "/quiz"+quizId;
+      res.render('doneFormCreation', {url: urlStringQuiz});
     });
     console.log("now pushing all data");
     for (var i = 0; i < req.session.arrQuestionCreate.length; i++) {
@@ -145,7 +145,7 @@ app.post("/submitAnswer", urlencodedParser, function(req, res){
       for(sign in signs){
         console.log("sign = " + signs[sign]);
       if(signs[sign] == 'c'){
-        
+
         correctCounter++;
       }else if(signs[sign] == 'w'){
 
@@ -156,6 +156,13 @@ app.post("/submitAnswer", urlencodedParser, function(req, res){
     }
     console.log("COUNTER correct = " + correctCounter);
     console.log("COUNTER wrong = " + wrongCounter);
+    var sumQuestions = Object.keys(questions).length
+    console.log("SUM  of questions = " + sumQuestions);
+    var urlStringQuiz = "/quiz"+sumQuestions;
+    percentCorrect = correctCounter / sumQuestions * 100;
+    roundedPercent = percentCorrect.toFixed(2);
+    res.render('doneAnsweringQuiz', {percent: roundedPercent, url: urlStringQuiz});
+    console.log("you are correct in " + roundedPercent + "% out of the questions");
 }).catch(function(error){
   console.log(error);
 });
