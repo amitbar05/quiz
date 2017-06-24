@@ -11,8 +11,6 @@
 </head>
 <body>
 
-you were right <%=percent%> out of the time
-
 <div class="pie"><%=percent%></div>
 
 <script>
@@ -35,7 +33,7 @@ jQuery('.pie').each(function(index, element) {
 
 </script>
 <%if(percent < 50){%>
-  <h2> you have Failed, please do the test one more time</h2>
+  <h5> you have Failed, please do the test one more time</h5>
   <button onClick="goBack()" class="mdl-button mdl-js-button mdl-button--raised mdl-js-ripple-effect">
     Button
   </button>
