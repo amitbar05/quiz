@@ -4,6 +4,9 @@
 <head>
     <link href="/assets/styles.css" rel="stylesheet" type="text/css">
     <script src="scripts/jquery-3.2.1.js"></script>
+    <link rel="stylesheet" href="https://fonts.googleapis.com/icon?family=Material+Icons">
+    <link rel="stylesheet" href="https://code.getmdl.io/1.3.0/material.indigo-pink.min.css">
+    <script defer src="https://code.getmdl.io/1.3.0/material.min.js"></script>
 
 </head>
 <body>
@@ -30,10 +33,17 @@ jQuery('.pie').each(function(index, element) {
   jQuery(this).append('<h2>' + num + '%</h2>');
 });
 
-</script
+</script>
 <%if(percent < 50){%>
-  <h1> you have Failed, please do the test one more time</h1>
-  <a href="<%=url%>">redo the test</a>
+  <h2> you have Failed, please do the test one more time</h2>
+  <button onClick="goBack()" class="mdl-button mdl-js-button mdl-button--raised mdl-js-ripple-effect">
+    Button
+  </button>
+  <script>
+  function goBack() {
+      window.history.back();
+  }
+  </script>
 <%}%>
 
 </body>

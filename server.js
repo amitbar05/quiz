@@ -1,7 +1,6 @@
 var express        =        require("express");
 var bodyParser     =        require("body-parser");
 var fs = require("fs");
-//var less = require('less');
 var app            =        express();
 var session = require("express-session")
 var formSub = require("./formSubmition.js");
@@ -52,7 +51,9 @@ app.get('/quiz:number',function(req,res){
 
     if(maxQuizes < req.params.number){
       res.render("numberOfQuizTooHigh")
-    }else{
+    }else if(req.params.number < 0){
+        res.render("numberOfQuizTooHigh")
+      }else{
       showSql.getFormByNumForms(req.params.number, function callback(wantedQuiz){
         console.log(wantedQuiz);
         var question_passed = wantedQuiz[0].question_passed;
@@ -80,13 +81,10 @@ app.post("/numberOfQuestion", urlencodedParser, function(req,res){
   sess.maxCounter = req.body.numQuestions;
   console.log("maxCounter from session"+sess.maxCounter);
   console.log("sessionID "+req.sessionID);
-  console.log("sessionID "+req.sessionID);
-  console.log("sessionID "+req.sessionID);
-  console.log("sessionID "+req.sessionID);
+
 
 
   res.render('indexCreate', {count: sess.counterQ});
-  console.log("count initiaing.... "+sess.counterQ);
 
 });
 
@@ -135,7 +133,6 @@ app.post("/submitQuestion", urlencodedParser,function (req, res) {
 
 app.post("/submitAnswer", urlencodedParser, function(req, res){
   var questions = req.body
-  console.log("request body: " + JSON.stringify(questions));
 
 
     getCorrectAnsweres(questions).then(function getAnsweresStat(signs){
@@ -143,12 +140,9 @@ app.post("/submitAnswer", urlencodedParser, function(req, res){
       var correctCounter = 0;
       var wrongCounter = 0;
       for(sign in signs){
-        console.log("sign = " + signs[sign]);
       if(signs[sign] == 'c'){
-
         correctCounter++;
       }else if(signs[sign] == 'w'){
-
         wrongCounter++;
       }else {
         console.log("ERROR: wrong sign of correctness not c or w, please check isAnswerCorrect(), BTW the sign is "+ signs[sign]);
@@ -158,11 +152,13 @@ app.post("/submitAnswer", urlencodedParser, function(req, res){
     console.log("COUNTER wrong = " + wrongCounter);
     var sumQuestions = Object.keys(questions).length
     console.log("SUM  of questions = " + sumQuestions);
-    var urlStringQuiz = "/quiz"+sumQuestions;
+    //need to get the number of quiz
+
+    var urlStringQuiz = "/quiz"+2;
+
     percentCorrect = correctCounter / sumQuestions * 100;
     roundedPercent = percentCorrect.toFixed(2);
     res.render('doneAnsweringQuiz', {percent: roundedPercent, url: urlStringQuiz});
-    console.log("you are correct in " + roundedPercent + "% out of the questions");
 }).catch(function(error){
   console.log(error);
 });
@@ -196,16 +192,12 @@ function isAnswerCorrect(question ,selected){
 
       var selectedAnswer = selected;
 
-      console.log("select answer before module = " + selectedAnswer);
       selectedAnswer = selectedAnswer % 4;
 
       if (selectedAnswer == 0){
         selectedAnswer = 4;
       }
 
-      console.log("\n questionId = " + question);
-      console.error("what what SELECTED::: "+ selectedAnswer);
-      console.log("dont what whtt me the CORRECT::: "+correct[0].correct_answer);
 
       if( correct[0].correct_answer == selectedAnswer){
         console.log("selected Answer and correct Answer Does match");
