@@ -19,7 +19,7 @@ var sess;
 
 
 app.get('/create',function(req,res){
-sess = req.session;
+  sess = req.session;
   sess.counterQ = 1;
   sess.maxCounter = 1;
   sess.arrQuestionCreate = [];
@@ -39,48 +39,32 @@ app.get('/test', function(req, res){
 
 app.get('/',function(req,res){
   // app.use(express.static(__dirname));
-        res.render('hello');
+  res.render('hello');
 });
 
 app.get('/quiz:number',function(req,res){
   // app.use(express.static(__dirname));rs
   console.log("asking quiz number "+req.params.number);
-showSql.getLastFormCreatedNumber(function callback(maxQuizes){
-  console.log("maxQuizes"+ maxQuizes);
+  showSql.getLastFormCreatedNumber(function callback(maxQuizes){
+    console.log("maxQuizes"+ maxQuizes);
 
-  if(maxQuizes < req.params.number){
-    res.render("numberOfQuizTooHigh")
-  }else{
-  showSql.getFormByNumForms(req.params.number, function callback(wantedQuiz){
-    console.log(wantedQuiz);
-    var question_passed = wantedQuiz[0].question_passed;
-    var size = wantedQuiz[0].size;
-      showSql.showSpecificFormByDistanceAndSize(question_passed,size,function callback(dataSql){
+    if(maxQuizes < req.params.number){
+      res.render("numberOfQuizTooHigh")
+    }else{
+      showSql.getFormByNumForms(req.params.number, function callback(wantedQuiz){
+        console.log(wantedQuiz);
+        var question_passed = wantedQuiz[0].question_passed;
+        var size = wantedQuiz[0].size;
+        showSql.showSpecificFormByDistanceAndSize(question_passed,size,function callback(dataSql){
           res.render('answer', {dataSql: dataSql, max: size});
+        });
       });
+    }
   });
-}
-});
 });
 
 
-function isCorrectAnswer(selectedAnswer, numQuestion){
-  showSql.numOfCorrectAnswerByNumQuestion(numQuestion, function callback(correct){
-    selectedAnswer = selectedAnswer % 4;
-    if(selectedAnswer == 0){
-      selectedAnswer = 4;
-    }
-    console.error("what what SELECTED:::"+ selectedAnswer);
-    console.log("dont what whtt me the CORRECT::: "+correct[0].correct_answer);
-    if(correct[0].correct_answer == selectedAnswer){
-      console.log("selected Answer and correct Answer Does match");
-      return true;
-    }else {
-      console.log("selected Answer and correct Answer does NOT match");
-      return false;
-    }
-  });
-}
+
 
 
 ///app.post('/', function())
@@ -93,10 +77,10 @@ app.post("/numberOfQuestion", urlencodedParser, function(req,res){
   sess = req.session;
   sess.maxCounter = req.body.numQuestions;
   console.log("maxCounter from session"+sess.maxCounter);
-console.log("sessionID "+req.sessionID);
-console.log("sessionID "+req.sessionID);
-console.log("sessionID "+req.sessionID);
-console.log("sessionID "+req.sessionID);
+  console.log("sessionID "+req.sessionID);
+  console.log("sessionID "+req.sessionID);
+  console.log("sessionID "+req.sessionID);
+  console.log("sessionID "+req.sessionID);
 
 
   res.render('indexCreate', {count: sess.counterQ});
@@ -106,13 +90,13 @@ console.log("sessionID "+req.sessionID);
 
 
 app.post("/submitQuestion", urlencodedParser,function (req, res) {
-sess = req.session;
+  sess = req.session;
   console.log("count~~!: "+sess.counterQ);
   console.log("Maxcount~~!: "+sess.maxCounter);
   if(sess.counterQ < sess.maxCounter){
-      sess.arrQuestionCreate.push(req.body);
-      sess.counterQ++;
-      res.render('indexCreate', {count: sess.counterQ});
+    sess.arrQuestionCreate.push(req.body);
+    sess.counterQ++;
+    res.render('indexCreate', {count: sess.counterQ});
 
   }else if(sess.counterQ == sess.maxCounter){
     console.log("equility is importent");
@@ -122,46 +106,114 @@ sess = req.session;
     howManyQuestionPassedUntilTheBeginingOfQuiz  = fs.readFileSync("questionsCounterSoFar.txt");
     //need to do the sql sync with callback
 
-      var questionsNumAfterQuiz = (parseInt(howManyQuestionPassedUntilTheBeginingOfQuiz)+parseInt(req.session.maxCounter));
-      console.log("howManyQuestionPassedUntilTheBeginingOfQuiz::::::::::::::::::::::::::::: "+ howManyQuestionPassedUntilTheBeginingOfQuiz);
-      console.log("questionsNumAfterQuiz::::::::::::::::::::::::::::: "+ questionsNumAfterQuiz);
-      fs.writeFile("questionsCounterSoFar.txt", questionsNumAfterQuiz, (err) => {
-        if (err) throw err;
-        console.log('questionsCounterSoFar.txt file has been saved!');
-  });
+    var questionsNumAfterQuiz = (parseInt(howManyQuestionPassedUntilTheBeginingOfQuiz)+parseInt(req.session.maxCounter));
+    console.log("howManyQuestionPassedUntilTheBeginingOfQuiz::::::::::::::::::::::::::::: "+ howManyQuestionPassedUntilTheBeginingOfQuiz);
+    console.log("questionsNumAfterQuiz::::::::::::::::::::::::::::: "+ questionsNumAfterQuiz);
+    fs.writeFile("questionsCounterSoFar.txt", questionsNumAfterQuiz, (err) => {
+      if (err) throw err;
+      console.log('questionsCounterSoFar.txt file has been saved!');
+    });
 
     var quizIdCurrent;
     insert.insertQuestionPosInfoSql(parseInt(howManyQuestionPassedUntilTheBeginingOfQuiz), parseInt(req.session.maxCounter), function callback(quizId){
       quizIdCurrent = quizId;
       console.log("here is get the quiz number, which is = " + quizIdCurrent);
 
-          res.render('doneFormCreation');
+      res.render('doneFormCreation');
     });
-  console.log("now pushing all data");
-  for (var i = 0; i < req.session.arrQuestionCreate.length; i++) {
-    console.log("now pushing data number "+JSON.stringify(req.session.arrQuestionCreate[i]));
-    formSub.formSubmitQuestionSql(req.session.arrQuestionCreate[i]);
-  }
+    console.log("now pushing all data");
+    for (var i = 0; i < req.session.arrQuestionCreate.length; i++) {
+      console.log("now pushing data number "+JSON.stringify(req.session.arrQuestionCreate[i]));
+      formSub.formSubmitQuestionSql(req.session.arrQuestionCreate[i]);
+    }
 
   }else{
-  console.error("number of questions is less than acceptable");
+    console.error("number of questions is less than acceptable");
   }
 });
 
 
 app.post("/submitAnswer", urlencodedParser, function(req, res){
   var questions = req.body
-  console.log("request body: " + JSON.stringify(questions) );
+  console.log("request body: " + JSON.stringify(questions));
 
-    for (var question in questions){
-    console.log("questionID = " + question);
 
-    console.log("User Answer = " + questions[question])
+    getCorrectAnsweres(questions).then(function getAnsweresStat(signs){
+      console.log("signs = " + signs);
+      var correctCounter = 0;
+      var wrongCounter = 0;
+      for(sign in signs){
+        console.log("sign = " + signs[sign]);
+      if(signs[sign] == 'c'){
+        
+        correctCounter++;
+      }else if(signs[sign] == 'w'){
 
-    console.log("The q and a is: "+isCorrectAnswer(questions[question],question));
+        wrongCounter++;
+      }else {
+        console.log("ERROR: wrong sign of correctness not c or w, please check isAnswerCorrect(), BTW the sign is "+ signs[sign]);
+      }
+    }
+    console.log("COUNTER correct = " + correctCounter);
+    console.log("COUNTER wrong = " + wrongCounter);
+}).catch(function(error){
+  console.log(error);
+});
+});
+
+
+
+
+function getCorrectAnsweres(questions){
+  var arrPromises = [];
+
+  console.log("\n--------------------")
+  console.log("\n" + JSON.stringify(questions))
+  for(question in questions){
+    arrPromises.push(isAnswerCorrect(question, questions[question]));
+}
+return Promise.all(arrPromises);
 }
 
+
+
+function isAnswerCorrect(question ,selected){
+  return new Promise((resolve, reject) => {
+    console.log("\n ----> Loop: Question ID: " + question)
+
+    showSql.numOfCorrectAnswerByNumQuestion(question, function callback(correct){
+
+      console.log("\n ----> Callback: Question ID: " + question)
+
+      console.log('\n\n Correct answer --> ' + JSON.stringify(correct))
+
+      var selectedAnswer = selected;
+
+      console.log("select answer before module = " + selectedAnswer);
+      selectedAnswer = selectedAnswer % 4;
+
+      if (selectedAnswer == 0){
+        selectedAnswer = 4;
+      }
+
+      console.log("\n questionId = " + question);
+      console.error("what what SELECTED::: "+ selectedAnswer);
+      console.log("dont what whtt me the CORRECT::: "+correct[0].correct_answer);
+
+      if( correct[0].correct_answer == selectedAnswer){
+        console.log("selected Answer and correct Answer Does match");
+        resolve('c');
+      } else {
+        console.log("selected Answer and correct Answer does NOT match");
+        resolve('w');
+      }
 });
+});
+}
+
+
+
+
 
 
 

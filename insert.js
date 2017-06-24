@@ -45,7 +45,6 @@ exports.insertQuestionPosInfoSql = function( question_passed, size, callback){
     console.error("insert {"+question_passed+","+size+"} in succes");
     select.getLastFormCreatedNumber(function callback2(currentlyQuizCreatedId){
       console.log("returning the number of the quiz which was just created, the quiz number is = " + currentlyQuizCreatedId);
-  //    callback(300000000);
            callback(currentlyQuizCreatedId);
     });
 
