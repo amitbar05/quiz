@@ -59,6 +59,7 @@ app.get('/quiz:number',function(req,res){
         var question_passed = wantedQuiz[0].question_passed;
         var size = wantedQuiz[0].size;
         showSql.showSpecificFormByDistanceAndSize(question_passed,size,function callback(dataSql){
+          console.log("dataSql = " + dataSql);
           res.render('answer', {dataSql: dataSql, max: size});
         });
       });

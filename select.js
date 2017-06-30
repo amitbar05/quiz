@@ -10,12 +10,12 @@ var connection = mysql.createConnection({
 connection.connect();
 
 exports.getLastFormCreatedNumber = function( callback){
-  connection.query('SELECT * FROM listPosDis ORDER BY Number_form DESC LIMIT 1', function(err, result){
+  connection.query('SELECT * FROM listPosDis ORDER BY quiz_id DESC LIMIT 1', function(err, result){
     if(err){
       console.error(err);
     }else {
-      console.log(result[0].Number_form);
-      callback(parseInt(result[0].Number_form));
+      console.log("selected quis number " + result[0].quiz_id);
+      callback(parseInt(result[0].quiz_id));
     }
   });
 };
@@ -23,7 +23,7 @@ exports.getLastFormCreatedNumber = function( callback){
 
 
 exports.numOfCorrectAnswerByNumQuestion = function(numAnswer, callback){
-  var string = 'SELECT correct_answer FROM quiz WHERE number_question = '+numAnswer+';';
+  var string = 'SELECT correct_answer FROM quiz WHERE question_id = '+numAnswer+';';
   console.log("are you crazy this suppose to be fine: "+ string);
   connection.query(string, function(err, result){
     if(err){
@@ -36,7 +36,7 @@ exports.numOfCorrectAnswerByNumQuestion = function(numAnswer, callback){
 };
 
 exports.getFormByNumForms = function(numForm, callback){
-  var string = 'SELECT * FROM listPosDis WHERE Number_form = '+numForm+';';
+  var string = 'SELECT * FROM listPosDis WHERE quiz_id = '+numForm+';';
   connection.query(string, function(err, result){
     if(err){
       console.error("error number idiot 1"+err);
@@ -54,14 +54,14 @@ exports.showSpecificFormByDistanceAndSize = function(howManyQuestionPassedUntilT
 
   var sumOfQuestionPassed = parseInt(howManyQuestionPassedUntilTheBeginingOfQuiz) + parseInt(sizeOfQuiz);
   console.log("sumOfQuestionPassed:                                     "+ sumOfQuestionPassed);
-  var string ='SELECT * FROM (SELECT * FROM ( SELECT * FROM quiz ORDER BY number_question ASC LIMIT '
-  +sumOfQuestionPassed+') temp ORDER BY temp.number_question DESC LIMIT '
+  var string ='SELECT * FROM (SELECT * FROM ( SELECT * FROM quiz ORDER BY question_id ASC LIMIT '
+  +sumOfQuestionPassed+') temp ORDER BY temp.question_id DESC LIMIT '
   +sizeOfQuiz+') t ORDER BY rand() ASC';
 
   //var string =SELECT * FROM (SELECT * FROM ( SELECT * FROM quiz ORDER BY number_question ASC LIMIT 'QuestionPassed') temp ORDER BY temp.number_question DESC LIMIT 'sizeOfQuiz+') t ORDER BY rand() ASC;
   //var stringNotRandom is unnesccery
-  var stringNotRandom ='SELECT * FROM ( SELECT * FROM quiz ORDER BY number_question ASC LIMIT '
-  +sumOfQuestionPassed+') temp ORDER BY temp.number_question DESC LIMIT '
+  var stringNotRandom ='SELECT * FROM ( SELECT * FROM quiz ORDER BY question_id ASC LIMIT '
+  +sumOfQuestionPassed+') temp ORDER BY temp.question_id DESC LIMIT '
   +sizeOfQuiz;
   connection.query(string, function(err, result){
     if(err){
