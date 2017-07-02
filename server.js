@@ -6,6 +6,7 @@ var session = require("express-session")
 var formSub = require("./formSubmition.js");
 var showSql = require("./select.js");
 var insert = require("./insert.js");
+var update = require("./update.js");
 
 
 
@@ -118,13 +119,17 @@ app.post("/submitQuestion", urlencodedParser,function (req, res) {
 
     insert.insertQuestionPosInfoSql(parseInt(howManyQuestionPassedUntilTheBeginingOfQuiz), parseInt(req.session.maxCounter), function callback(quizId){
       var urlStringQuiz = "/quiz"+quizId;
+      console.log("now pushing all data");
+      for (var i = 0; i < req.session.arrQuestionCreate.length; i++) {
+        console.log("howManyQuestionPassedUntilTheBeginingOfQuiz = " + howManyQuestionPassedUntilTheBeginingOfQuiz);
+        console.log("now pushing data number "+JSON.stringify(req.session.arrQuestionCreate[i]));
+        insert.insertAnswersQuestionsStats(req.session.arrQuestionCreate[i],parseInt(howManyQuestionPassedUntilTheBeginingOfQuiz)+(i+1),quizId);
+        formSub.formSubmitQuestionSql(req.session.arrQuestionCreate[i]);
+      }
+
       res.render('doneFormCreation', {url: urlStringQuiz});
     });
-    console.log("now pushing all data");
-    for (var i = 0; i < req.session.arrQuestionCreate.length; i++) {
-      console.log("now pushing data number "+JSON.stringify(req.session.arrQuestionCreate[i]));
-      formSub.formSubmitQuestionSql(req.session.arrQuestionCreate[i]);
-    }
+
 
   }else{
     console.error("number of questions is less than acceptable");
@@ -135,34 +140,58 @@ app.post("/submitQuestion", urlencodedParser,function (req, res) {
 app.post("/submitAnswer", urlencodedParser, function(req, res){
   var questions = req.body
 
+  var personalNum = req.body.personalNum;
+  console.log("req.body = " + JSON.stringify(req.body.personalNum));
+  console.log("personal num = " + req.body.personalNum);
+  delete questions["personalNum"];
+  console.log("here is suppose to be the url getter -- " + Object.keys(questions)[0]);
+  showSql.getQuizNumByNumQuestion(parseInt(Object.keys(questions)[0]), function callback(quizNum){
 
     getCorrectAnsweres(questions).then(function getAnsweresStat(signs){
       console.log("signs = " + signs);
       var correctCounter = 0;
       var wrongCounter = 0;
       for(sign in signs){
-      if(signs[sign] == 'c'){
-        correctCounter++;
-      }else if(signs[sign] == 'w'){
-        wrongCounter++;
-      }else {
-        console.log("ERROR: wrong sign of correctness not c or w, please check isAnswerCorrect(), BTW the sign is "+ signs[sign]);
+        if(signs[sign] == 'c'){
+          correctCounter++;
+        }else if(signs[sign] == 'w'){
+          wrongCounter++;
+        }else {
+          console.log("ERROR: wrong sign of correctness not c or w, please check isAnswerCorrect(), BTW the sign is "+ signs[sign]);
+        }
       }
-    }
-    console.log("COUNTER correct = " + correctCounter);
-    console.log("COUNTER wrong = " + wrongCounter);
-    var sumQuestions = Object.keys(questions).length
-    console.log("SUM  of questions = " + sumQuestions);
-    //need to get the number of quiz
+      console.log("COUNTER correct = " + correctCounter);
+      console.log("COUNTER wrong = " + wrongCounter);
+      var sumQuestions = Object.keys(questions).length
+      console.log("SUM  of questions = " + sumQuestions);
+      //need to get the number of quiz
 
-    var urlStringQuiz = "/quiz"+2;
+      var urlStringQuiz = "/quiz"+quizNum[0].quiz_id;
 
-    percentCorrect = correctCounter / sumQuestions * 100;
-    roundedPercent = percentCorrect.toFixed(2);
-    res.render('doneAnsweringQuiz', {percent: roundedPercent, url: urlStringQuiz});
-}).catch(function(error){
-  console.log(error);
-});
+      percentCorrect = correctCounter / sumQuestions * 100;
+      roundedPercent = percentCorrect.toFixed(2);
+      showSql.isRowGradeExists(personalNum, quizNum[0].quiz_id, function callback(exists){
+        console.log("exists = " + exists);
+        if(parseInt(exists)){
+        update.updateGrade(personalNum,quizNum[0].quiz_id,roundedPercent,function callback2(){
+          res.render('doneAnsweringQuiz', {percent: roundedPercent, url: urlStringQuiz});
+        });
+        }
+        else{
+        insert.insertGrade(personalNum, percentCorrect, quizNum[0].quiz_id, function callback2(){
+          res.render('doneAnsweringQuiz', {percent: roundedPercent, url: urlStringQuiz});
+
+        });
+      }
+      });
+
+    }).catch(function(error){
+      console.log(error);
+    });
+
+  });
+
+
 });
 
 
@@ -199,9 +228,10 @@ function isAnswerCorrect(question ,selected){
         selectedAnswer = 4;
       }
 
-
+      update.addAnswerCounter(question, selectedAnswer);
       if( correct[0].correct_answer == selectedAnswer){
         console.log("selected Answer and correct Answer Does match");
+
         resolve('c');
       } else {
         console.log("selected Answer and correct Answer does NOT match");

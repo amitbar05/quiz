@@ -32,10 +32,10 @@ jQuery('.pie').each(function(index, element) {
 });
 
 </script>
-<%if(percent < 50){%>
+<%if(percent <= 50){%>
   <h5> you have Failed, please do the test one more time</h5>
   <button onClick="goBack()" class="mdl-button mdl-js-button mdl-button--raised mdl-js-ripple-effect">
-    Button
+    Button url = <=url>
   </button>
   <script>
   function goBack() {

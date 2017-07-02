@@ -29,8 +29,54 @@ exports.numOfCorrectAnswerByNumQuestion = function(numAnswer, callback){
     if(err){
       console.error("error number idiot 2313213"+err);
     }else {
-      console.log("i am not an error: "+result);
+      console.log("i am not an error: "+JSON.stringify(result));
       callback(result);
+    }
+  });
+};
+
+exports.getQuizNumByNumQuestion = function(numAnswer, callback){
+  var string = 'SELECT quiz_id FROM answerStat WHERE question_id = '+numAnswer+' LIMIT 1;';
+  console.log("are you crazy this suppose to be fine: "+ string);
+  connection.query(string, function(err, result){
+    if(err){
+      console.error("error number idiot 2313213"+err);
+    }else {
+      console.log("i am not an error: "+JSON.stringify(result));
+      callback(result);
+    }
+  });
+};
+
+exports.isRowGradeExists = function(person_id, quiz_id, callback){
+  var string = 'select count(1) from grades where person_id = ' + person_id + ' AND quiz_id = ' + quiz_id + ';';
+
+  console.log("are you crazy this suppose to be fine: "+ string);
+  connection.query(string, function(err, result){
+    if(err){
+      console.error("error number idiot 2313213"+err);
+    }else {
+
+      var exists;
+      for(var key in result) {
+    if(result.hasOwnProperty(key)) {
+        console.log("key = " + JSON.stringify(key));
+        console.log("result = " + JSON.stringify(result));
+        /*
+        I need to
+
+
+          get the value of result
+
+
+        */
+        exists = result[0][key];
+          console.log("isRowGradeExists - exists = " + JSON.stringify(exists));
+        break;
+    }
+}
+      console.log("isRowGradeExists - exists = " + JSON.stringify(exists));
+      callback(exists);
     }
   });
 };
@@ -41,7 +87,7 @@ exports.getFormByNumForms = function(numForm, callback){
     if(err){
       console.error("error number idiot 1"+err);
     }else {
-      console.log("i am not an error: "+result);
+      console.log("i am not an error: "+JSON.stringify(result));
       callback(result);
     }
   });
@@ -49,11 +95,8 @@ exports.getFormByNumForms = function(numForm, callback){
 
 
 exports.showSpecificFormByDistanceAndSize = function(howManyQuestionPassedUntilTheBeginingOfQuiz, sizeOfQuiz, callback){
-  console.log("howManyQuestionPassedUntilTheBeginingOfQuiz:         "+howManyQuestionPassedUntilTheBeginingOfQuiz);
-  console.log("sizeOfQuiz;                                        "+sizeOfQuiz);
 
   var sumOfQuestionPassed = parseInt(howManyQuestionPassedUntilTheBeginingOfQuiz) + parseInt(sizeOfQuiz);
-  console.log("sumOfQuestionPassed:                                     "+ sumOfQuestionPassed);
   var string ='SELECT * FROM (SELECT * FROM ( SELECT * FROM quiz ORDER BY question_id ASC LIMIT '
   +sumOfQuestionPassed+') temp ORDER BY temp.question_id DESC LIMIT '
   +sizeOfQuiz+') t ORDER BY rand() ASC';
