@@ -18,7 +18,7 @@ exports.addAnswerCounter = function(question_id, answer_id){
     if(err){
       console.error("error number idiot 1"+err);
     }else {
-      console.log("updated ++"+answer_id);
+      console.log("updated counter to answer: "+answer_id);
     }
   });
 };

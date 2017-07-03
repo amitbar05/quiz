@@ -56,27 +56,7 @@ exports.isRowGradeExists = function(person_id, quiz_id, callback){
     if(err){
       console.error("error number idiot 2313213"+err);
     }else {
-
-      var exists;
-      for(var key in result) {
-    if(result.hasOwnProperty(key)) {
-        console.log("key = " + JSON.stringify(key));
-        console.log("result = " + JSON.stringify(result));
-        /*
-        I need to
-
-
-          get the value of result
-
-
-        */
-        exists = result[0][key];
-          console.log("isRowGradeExists - exists = " + JSON.stringify(exists));
-        break;
-    }
-}
-      console.log("isRowGradeExists - exists = " + JSON.stringify(exists));
-      callback(exists);
+      callback(parseInt(Object.values(result[0])));
     }
   });
 };
