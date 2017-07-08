@@ -68,6 +68,22 @@ callback2();
 });
 };
 
+
+exports.insertSecurityPassword = function(quiz_id, securityPin, callback){
+  var q = {
+    password : securityPin,
+    quiz_id : quiz_id
+
+  };
+  var query = connection.query('insert into securityKeys set ?', q, function(err, result){
+    if(err){
+      console.error(err);
+    }
+callback();
+
+});
+}
+
 exports.insertAnswersQuestionsStats = function(question,question_id, quiz_id){
   var q1 = {
     answer_id : 1,

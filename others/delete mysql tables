@@ -1,0 +1,5 @@
+truncate table quiz;
+truncate table listPosDis;
+truncate table answerStat;
+truncate table grades;
+truncate table securityKeys;

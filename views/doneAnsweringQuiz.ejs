@@ -4,14 +4,16 @@
 <head>
     <link href="/assets/styles.css" rel="stylesheet" type="text/css">
     <script src="scripts/jquery-3.2.1.js"></script>
+    <script src = "scripts/loading.js"></script>
     <link rel="stylesheet" href="https://fonts.googleapis.com/icon?family=Material+Icons">
     <link rel="stylesheet" href="https://code.getmdl.io/1.3.0/material.indigo-pink.min.css">
     <script defer src="https://code.getmdl.io/1.3.0/material.min.js"></script>
 
 </head>
 <body>
-
+<div id="p2" class="mdl-progress mdl-js-progress mdl-progress__indeterminate" style="display:none"></div>
 <div class="pie"><%=percent%></div>
+
 
 <script>
 jQuery('.pie').each(function(index, element) {
@@ -34,7 +36,7 @@ jQuery('.pie').each(function(index, element) {
 </script>
 <%if(percent <= 50){%>
   <h5> you have Failed, please do the test one more time</h5>
-  <button onClick="goBack()" class="mdl-button mdl-js-button mdl-button--raised mdl-js-ripple-effect">
+  <button  onClick="goBack();displayLoading()" class="mdl-button mdl-js-button mdl-button--raised mdl-js-ripple-effect">
     Button url = <=url>
   </button>
   <script>

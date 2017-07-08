@@ -41,14 +41,16 @@
                 <label class="mdl-textfield__label" for="correct">correct by number</label>
               </div>
               <br>
-              <button class="mdl-button mdl-js-button mdl-button--raised mdl-js-ripple-effect mdl-button--colored">
+              <button onClick="this.form.submit(); displayLoading();this.disabled=true;" class="mdl-button mdl-js-button mdl-button--raised mdl-js-ripple-effect mdl-button--colored">
                 Next Question
               </button>
               </form>
 
+              <!-- MDL Progress Bar with Indeterminate Progress -->
+              <div id="p2" class="mdl-progress mdl-js-progress mdl-progress__indeterminate" style="display:none"></div>
 
 
-
-
+              <script src="scripts/jquery-3.2.1.js"></script>
+              <script src = "scripts/loading.js"></script>
 </body>
 </html>

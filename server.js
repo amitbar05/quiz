@@ -16,6 +16,8 @@ app.set('view engine', 'ejs');
 app.use(express.static(__dirname));
 app.use(session({secret: 'ssshhhhh', resave:false, saveUninitialized:true}));
 var sess;
+var urlencodedParser = bodyParser.urlencoded({ extended: true });
+app.use(bodyParser.json());
 
 
 app.get('/create',function(req,res){
@@ -45,7 +47,13 @@ app.get('/',function(req,res){
 });
 
 app.get('/quiz:number',function(req,res){
-  // app.use(express.static(__dirname));rs
+    console.log("asking quiz number "+req.params.number);
+    res.render("enterPassword",{number: req.params.number, passMsg: ""});
+});
+
+app.post("/securityPin:number", urlencodedParser, function(req,res){
+  showSql.checkSecurityPinByQuizId(req.params.number, req.body.securityPin, function callback(verified){
+  if(verified){
   console.log("asking quiz number "+req.params.number);
   showSql.getLastFormCreatedNumber(function callback(maxQuizes){
     console.log("maxQuizes"+ maxQuizes);
@@ -66,19 +74,23 @@ app.get('/quiz:number',function(req,res){
       });
     }
   });
+}else{
+  var string = "wrong password! please check your password";
+  res.render("enterPassword",{number: req.params.number, passMsg: string});
+}
 });
-
-
+});
 
 
 
 ///app.post('/', function())
 
 //Here we are configuring express to use body-parser as middle-ware.
-var urlencodedParser = bodyParser.urlencoded({ extended: true });
-app.use(bodyParser.json());
+
 
 app.post("/numberOfQuestion", urlencodedParser, function(req,res){
+
+function function2() {
   sess = req.session;
   sess.maxCounter = req.body.numQuestions;
   console.log("maxCounter from session"+sess.maxCounter);
@@ -87,6 +99,9 @@ app.post("/numberOfQuestion", urlencodedParser, function(req,res){
 
 
   res.render('indexCreate', {count: sess.counterQ});
+}
+console.log("this is before");
+setTimeout(function2, 500);
 
 });
 
@@ -102,6 +117,7 @@ app.post("/submitQuestion", urlencodedParser,function (req, res) {
 
   }else if(sess.counterQ == sess.maxCounter){
     console.log("equility is importent");
+
 
     sess.arrQuestionCreate.push(req.body);
     ////////////////!!!Dont save var on file, save it seession, all the vars!!!!!!!!!!!!!!!!!!!
@@ -119,6 +135,11 @@ app.post("/submitQuestion", urlencodedParser,function (req, res) {
 
     insert.insertQuestionPosInfoSql(parseInt(howManyQuestionPassedUntilTheBeginingOfQuiz), parseInt(req.session.maxCounter), function callback(quizId){
       var urlStringQuiz = "/quiz"+quizId;
+
+        var securityPin = generateRandomPin();
+        console.log("securityPin = " + securityPin);
+
+
       console.log("now pushing all data");
       for (var i = 0; i < req.session.arrQuestionCreate.length; i++) {
         console.log("howManyQuestionPassedUntilTheBeginingOfQuiz = " + howManyQuestionPassedUntilTheBeginingOfQuiz);
@@ -126,16 +147,27 @@ app.post("/submitQuestion", urlencodedParser,function (req, res) {
         insert.insertAnswersQuestionsStats(req.session.arrQuestionCreate[i],parseInt(howManyQuestionPassedUntilTheBeginingOfQuiz)+(i+1),quizId);
         formSub.formSubmitQuestionSql(req.session.arrQuestionCreate[i]);
       }
+      insert.insertSecurityPassword(quizId, securityPin, function callback(){
+      res.render('doneFormCreation', {url: urlStringQuiz, password: securityPin});
+      });
 
-      res.render('doneFormCreation', {url: urlStringQuiz});
     });
 
 
   }else{
-    console.error("number of questions is less than acceptable");
+    console.error("ERROR: number of questions is less than acceptable");
   }
 });
 
+function generateRandomPin(){
+  var fullNumber = [];
+  var digit1 = Math.floor(Math.random() * 10);
+   var digit2 = Math.floor(Math.random() * 10);
+   var digit3 = Math.floor(Math.random() * 10);
+   var digit4 = Math.floor(Math.random() * 10);
+    fullNumber.push(digit1, digit2, digit3, digit4);
+  return fullNumber.join("");
+}
 
 app.post("/submitAnswer", urlencodedParser, function(req, res){
   var questions = req.body

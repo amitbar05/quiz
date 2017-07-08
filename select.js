@@ -73,6 +73,26 @@ exports.getFormByNumForms = function(numForm, callback){
   });
 };
 
+exports.checkSecurityPinByQuizId = function(number, securityPin, callback){
+  var string = 'select password from securityKeys where quiz_id = ' + number + ';';
+
+  console.log("are you crazy this suppose to be fine: "+ string);
+  connection.query(string, function(err, result){
+    if(err){
+      console.error("error number idiot 2"+err);
+    }else{
+  console.log("the password suppose to be = " + JSON.stringify(result[0].password));
+  console.log("the password enter is = " + securityPin);
+  if(result[0].password == securityPin){
+console.log("true pin code");
+  callback(true);
+}else{
+  console.log("false pin code");
+  callback(false);
+}
+}
+});
+};
 
 exports.showSpecificFormByDistanceAndSize = function(howManyQuestionPassedUntilTheBeginingOfQuiz, sizeOfQuiz, callback){
 

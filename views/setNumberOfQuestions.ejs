@@ -5,10 +5,12 @@
   <link rel="stylesheet" href="https://fonts.googleapis.com/icon?family=Material+Icons">
   <link rel="stylesheet" href="https://code.getmdl.io/1.3.0/material.indigo-pink.min.css">
   <script defer src="https://code.getmdl.io/1.3.0/material.min.js"></script>
+
+
 </head>
 <body>
 
-  <div class="demo-content mdl-color--blue mdl-shadow--4dp content mdl-cell mdl-cell--8-col">
+<div class="mdl-cell mdl-color--blue mdl-shadow--4dp">
     <!-- Numeric Textfield -->
     <form action="/numberOfQuestion" method="post">
       <div class="mdl-textfield mdl-js-textfield">
@@ -16,14 +18,16 @@
         <label class="mdl-textfield__label mdl-color-text--black" for="numQuestions">how much questions</label>
         <span class="mdl-textfield__error">Numbers only!</span>
       </div>
-      <button type="sumbit" class="mdl-button mdl-js-button mdl-button--raised mdl-js-ripple-effect mdl-button--accent">
+      <button type="submit" onClick="this.form.submit(); displayLoading();this.disabled=true;" class="mdl-button mdl-js-button mdl-button--raised mdl-js-ripple-effect mdl-button--accent">
   done
 </button>
 
     </form>
   </div>
+  <!-- MDL Progress Bar with Indeterminate Progress -->
+  <div id="p2" class="mdl-progress mdl-js-progress mdl-progress__indeterminate" style="display:none"></div>
 
-
-
+<script src="scripts/jquery-3.2.1.js"></script>
+<script src = "scripts/loading.js"></script>
 </body>
 </html>
