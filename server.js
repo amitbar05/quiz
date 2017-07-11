@@ -41,6 +41,15 @@ app.get('/test', function(req, res){
   console.log("this is afrer doning");
 });
 
+app.get('/reset', function(req, res){
+
+  fs.writeFile("questionsCounterSoFar.txt", 0, (err) => {
+    if (err) throw err;
+    console.log('questionsCounterSoFar.txt file has been rested!');
+  });
+  res.render('hello');
+});
+
 app.get('/',function(req,res){
   // app.use(express.static(__dirname));
   res.render('hello');
@@ -48,21 +57,23 @@ app.get('/',function(req,res){
 
 app.get('/quiz:number',function(req,res){
     console.log("asking quiz number "+req.params.number);
+    showSql.getLastFormCreatedNumber(function callback(maxQuizes){
+      console.log("maxQuizes"+ maxQuizes);
+
+      if(maxQuizes < req.params.number){
+        res.render("numberOfQuizTooHigh")
+      }else if(req.params.number < 0){
+          res.render("numberOfQuizTooHigh")
+        }else{
     res.render("enterPassword",{number: req.params.number, passMsg: ""});
+  }
+    });
 });
 
-app.post("/securityPin:number", urlencodedParser, function(req,res){
+app.post("/secureQuiz:number", urlencodedParser, function(req,res){
   showSql.checkSecurityPinByQuizId(req.params.number, req.body.securityPin, function callback(verified){
   if(verified){
-  console.log("asking quiz number "+req.params.number);
-  showSql.getLastFormCreatedNumber(function callback(maxQuizes){
-    console.log("maxQuizes"+ maxQuizes);
-
-    if(maxQuizes < req.params.number){
-      res.render("numberOfQuizTooHigh")
-    }else if(req.params.number < 0){
-        res.render("numberOfQuizTooHigh")
-      }else{
+    console.log("asking quiz number "+req.params.number);
       showSql.getFormByNumForms(req.params.number, function callback(wantedQuiz){
         console.log(wantedQuiz);
         var question_passed = wantedQuiz[0].question_passed;
@@ -71,8 +82,7 @@ app.post("/securityPin:number", urlencodedParser, function(req,res){
           console.log("dataSql = " + dataSql);
           res.render('answer', {dataSql: dataSql, max: size});
         });
-      });
-    }
+
   });
 }else{
   var string = "wrong password! please check your password";

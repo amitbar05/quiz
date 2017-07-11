@@ -8,10 +8,10 @@
 </head>
 
 <body>
-  <form action="/submitAnswer" name="optionSelected" method="post">
+  <form action="/submitAnswer" name="optionSelected" method="post" autocomplete="off">
     <div class="mdl-cell mdl-shadow--4dp">
     <div class="mdl-textfield mdl-js-textfield">
-  <input class="mdl-textfield__input" type="text" pattern="[0-9]*" name="personalNum" required="true">
+  <input class="mdl-textfield__input" type="text" pattern="[0-9]*" name="personalNum" required="true"  autocomplete="on">
   <label class="mdl-textfield__label" for="phone">personal number</label>
   <span class="mdl-textfield__error">Digits only</span>
 </div>
