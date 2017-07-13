@@ -207,7 +207,7 @@ app.post("/submitAnswer", urlencodedParser, function(req, res){
       var sumQuestions = Object.keys(questions).length
       console.log("SUM  of questions = " + sumQuestions);
       //need to get the number of quiz
-
+      console.log("quizNum = " +quizNum);
       var urlStringQuiz = "/quiz"+quizNum[0].quiz_id;
 
       percentCorrect = correctCounter / sumQuestions * 100;
