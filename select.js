@@ -27,7 +27,7 @@ exports.numOfCorrectAnswerByNumQuestion = function(numAnswer, callback){
   console.log("are you crazy this suppose to be fine: "+ string);
   connection.query(string, function(err, result){
     if(err){
-      console.error("error number idiot 2313213"+err);
+      console.error("error number idiot 23132135"+err);
     }else {
       console.log("i am not an error: "+JSON.stringify(result));
       callback(result);
@@ -40,7 +40,7 @@ exports.getQuizNumByNumQuestion = function(numAnswer, callback){
   console.log("are you crazy this suppose to be fine: "+ string);
   connection.query(string, function(err, result){
     if(err){
-      console.error("error number idiot 2313213"+err);
+      console.error("error number idiot 23132134"+err);
     }else {
       console.log("getQuizNumByNumQuestion function working: "+JSON.stringify(result));
       callback(result);
@@ -54,7 +54,7 @@ exports.isRowGradeExists = function(person_id, quiz_id, callback){
   console.log("are you crazy this suppose to be fine: "+ string);
   connection.query(string, function(err, result){
     if(err){
-      console.error("error number idiot 2313213"+err);
+      console.error("error number idiot 2313313"+err);
     }else {
       callback(parseInt(Object.values(result[0])));
     }
