@@ -42,7 +42,7 @@ exports.getQuizNumByNumQuestion = function(numAnswer, callback){
     if(err){
       console.error("error number idiot 2313213"+err);
     }else {
-      console.log("i am not an error: "+JSON.stringify(result));
+      console.log("getQuizNumByNumQuestion function working: "+JSON.stringify(result));
       callback(result);
     }
   });

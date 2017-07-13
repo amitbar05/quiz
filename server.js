@@ -188,7 +188,7 @@ app.post("/submitAnswer", urlencodedParser, function(req, res){
   delete questions["personalNum"];
   console.log("here is suppose to be the url getter -- " + Object.keys(questions)[0]);
   showSql.getQuizNumByNumQuestion(parseInt(Object.keys(questions)[0]), function callback(quizNum){
-
+console.log("quizNum 2 = " +quizNum);
     getCorrectAnsweres(questions).then(function getAnsweresStat(signs){
       console.log("signs = " + signs);
       var correctCounter = 0;
