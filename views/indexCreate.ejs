@@ -17,31 +17,31 @@
               <form action="/submitQuestion" name="formOne" method="post" autocomplete="off">
 
                 <div class="mdl-textfield mdl-js-textfield mdl-textfield--floating-label">
-                  <input class="mdl-textfield__input" type="text" name="q" id="q" value="q<%= count%>?">
+                  <input class="mdl-textfield__input requiredField" type="text" name="q" id="q" value="q<%= count%>?">
                   <label class="mdl-textfield__label" for="q">what is the question?</label>
                 </div>
                 <div class="mdl-textfield mdl-js-textfield mdl-textfield--floating-label">
-                  <input class="mdl-textfield__input" type="text" name="a1" id="a1" value="a">
+                  <input class="mdl-textfield__input requiredField" type="text" name="a1" id="a1" value="a">
                   <label class="mdl-textfield__label" for="a1">first answer...</label>
                 </div>
               <div class="mdl-textfield mdl-js-textfield mdl-textfield--floating-label">
-                <input class="mdl-textfield__input" type="text" name="a2" id="a2" value="b">
+                <input class="mdl-textfield__input requiredField" type="text" name="a2" id="a2" value="b">
                 <label class="mdl-textfield__label" for="a2">second answer.....</label>
               </div>
               <div class="mdl-textfield mdl-js-textfield mdl-textfield--floating-label">
-                <input class="mdl-textfield__input" type="text" name="a3" id="a3" value="c">
+                <input class="mdl-textfield__input requiredField" type="text" name="a3" id="a3" value="c">
                 <label class="mdl-textfield__label" for="a3">third answer...</label>
               </div>
               <div class="mdl-textfield mdl-js-textfield mdl-textfield--floating-label">
-                <input class="mdl-textfield__input" type="text" name="a4" id="a4" value="d">
+                <input class="mdl-textfield__input requiredField" type="text" name="a4" id="a4" value="d">
                 <label class="mdl-textfield__label" for="a4">forth answer...</label>
               </div>
               <div class="mdl-textfield mdl-js-textfield mdl-textfield--floating-label">
-                <input class="mdl-textfield__input" type="text" name="correct" id="correct" value="3">
+                <input class="mdl-textfield__input requiredField" type="text" name="correct" id="correct" value="3">
                 <label class="mdl-textfield__label" for="correct">correct by number</label>
               </div>
               <br>
-              <button onClick="this.form.submit(); displayLoading();this.disabled=true;" class="mdl-button mdl-js-button mdl-button--raised mdl-js-ripple-effect mdl-button--colored">
+              <button id="register" onClick="this.form.submit(); displayLoading();this.disabled=true;" class="mdl-button mdl-js-button mdl-button--raised mdl-js-ripple-effect mdl-button--colored">
                 Next Question
               </button>
               </form>
@@ -52,5 +52,6 @@
 
               <script src="scripts/jquery-3.2.1.js"></script>
               <script src = "scripts/loading.js"></script>
+              <script src="scripts/requireddisablebutton.js"></script>
 </body>
 </html>
