@@ -55,7 +55,7 @@ exports.isRowGradeExists = function(person_id, quiz_id, callback){
   connection.query(string, function(err, result){
     if(err){
       console.error("error number idiot 2313313"+err);
-    }else
+    }else{
       callback(parseInt(Object.values(result[0])));
     }
   });
