@@ -3,7 +3,7 @@
 
   (function() {
     $(document).ready(function () {
-      $('#register').attr('disabled', 'disabled');
+
       var flag1=false, flag2=($(".options").length) ? false : true;
 
 //this can be deleted after no more default value, all input are empty
