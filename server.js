@@ -144,7 +144,7 @@ app.post("/submitQuestion", urlencodedParser,function (req, res) {
 
 
     insert.insertQuestionPosInfoSql(parseInt(howManyQuestionPassedUntilTheBeginingOfQuiz), parseInt(req.session.maxCounter), function callback(quizId){
-      var urlStringQuiz = "/quiz"+quizId;
+      var urlStringQuiz = "35.184.231.214:3000/quiz"+quizId;
 
         var securityPin = generateRandomPin();
         console.log("securityPin = " + securityPin);
